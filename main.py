@@ -7,6 +7,9 @@ import sys
 from playsound import playsound
 import os
 from threading import Thread
+import PyPDF2
+from PyQt5.QtGui import QMovie
+
 
 def ReverseDict(d):
     key_dict = []
@@ -23,9 +26,6 @@ def Capitilization(s):
 	return s
 
 
-        
-
-
 class GttsWindow(QtWidgets.QMainWindow):
     
 	def __init__(self,*args,**kwargs):
@@ -33,26 +33,16 @@ class GttsWindow(QtWidgets.QMainWindow):
 		self.langs = ReverseDict(googletrans.LANGUAGES)
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
-		self.folderpath = "C:\TTS_Output"
-		self.filename = "tts.mp3"
-
-		self.ui.Path.setText(self.folderpath)
-		self.ui.file_name.setText(self.filename)
 
 		for i in self.langs:
 			self.ui.Language_Selector.addItem(Capitilization(i))
 
-		self.ui.Open_File_Location.clicked.connect(self.ChooseOutput)
 		self.ui.Convert.clicked.connect(self.ConvertFile)
+		self.ui.ReadPDFButton.clicked.connect(self.ReadFromPDFFile)
+		self.ui.ReadFileButton.clicked.connect(self.ReadFromTextFile)
 
-	def ChooseOutput(self):
-		self.folderpath = str(QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Output Folder'))
-		self.folderpath =  self.folderpath.replace(r"/" , chr(92))
-		print(f"Changed Path : {self.folderpath}")
-		self.ui.Path.setText(self.folderpath)
 
 	def ConvertFile(self):
-		self.filename = str(self.ui.file_name.text())
 
 		msg = QMessageBox()
 		msg.setWindowTitle("gTTs Error")
@@ -64,15 +54,17 @@ class GttsWindow(QtWidgets.QMainWindow):
 		msg.setWindowIcon(icon)
 
 
-		if((self.filename != "" ) and (str(self.ui.textEdit.toPlainText())!="")):
+		if(str(self.ui.textEdit.toPlainText())!=""):
+			print("here")
 			tts = gTTS(str(self.ui.textEdit.toPlainText()) , lang=self.langs.get(self.ui.Language_Selector.currentText().lower()))
-
-			if((self.filename.endswith(".mp3"))):
-				tts.save(f"{self.folderpath}"+chr(92) +str(self.filename))
-				self.audiopath = f"{self.folderpath}"+chr(92) +str(self.filename)
+			print("here")
+			self.audiopath = str(QtWidgets.QFileDialog.getSaveFileName(self,"Save MP3 File" , filter="MP3 Files (*.mp3)")[0])
+			self.audiopath =  self.audiopath.replace(r"/" , chr(92))
+			if(self.audiopath != ""):
+				self.__SaveThread(tts)
 				m = QMessageBox()
 				m.setWindowTitle("gTTs Preview")
-				m.setText(f"Do you want to preview '{self.filename}'?")
+				m.setText(f"Do you want to preview '{str(self.audiopath.split(chr(92))[len(self.audiopath.split(chr(92)))-1])}' ?")
 				m.setIcon(QMessageBox.Question)
 				m.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
 				m.setDefaultButton(QMessageBox.No)
@@ -81,30 +73,28 @@ class GttsWindow(QtWidgets.QMainWindow):
 				m.setWindowIcon(icon)
 				m.buttonClicked.connect(self.PreviewSound)
 				m.exec_()
-				
-
 			else:
-				msg.setText("File Name does not end with '.mp3' ")
-				msg.setInformativeText("Supported Formats : '.mp3'")
-				msg.exec_()
-		
-
-		elif((self.filename == "" ) and (str(self.ui.textEdit.toPlainText())=="")):
-			msg.setText("Both File Name and Text Input Fields are empty.")
-			msg.exec_()
-			
-		elif((self.filename == "" )):
-			msg.setText("File Name Fields is empty.")
-			msg.exec_()
-			
-		elif((str(self.ui.textEdit.toPlainText())=="")):
+				m = QMessageBox()
+				m.setWindowTitle("gTTs Error")
+				m.setText(f"File not Saved")
+				m.setIcon(QMessageBox.Critical)
+				m.setStandardButtons(QMessageBox.Close)
+				m.setDefaultButton(QMessageBox.Close)
+				icon = QtGui.QIcon()
+				icon.addPixmap(QtGui.QPixmap("gtts.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+				m.setWindowIcon(icon)
+				m.buttonClicked.connect(self.PreviewSound)
+				m.exec_()
+		else:
 			msg.setText("No Text Inputted Into Input Field.")
 			msg.exec_()
 
+
 	def PreviewSound(self,pt):
-		print(pt.text())
 		if(pt.text() == "&Yes"):
-			with open(self.audiopath , "rb") as g:
+			if("tts.mp3" in list(os.listdir())):
+				os.remove("tts.mp3")
+			with open(str(self.audiopath) , "rb") as g:
 				with open("tts.mp3" , "wb") as h:
 					h.write(g.read())
 					h.close()
@@ -114,11 +104,54 @@ class GttsWindow(QtWidgets.QMainWindow):
 			pass
 
 
+	def ReadFromTextFile(self):
+		path = str(QtWidgets.QFileDialog.getOpenFileName(self , caption="Choose Text File" , filter="Text files (*.txt)")[0]).replace(r"/" , chr(92))
+		try:
+			with open(path , "r") as f:
+				self.ui.textEdit.setText(f.read())
+				f.close()
+		except:
+				m = QMessageBox()
+				m.setWindowTitle("gTTs Error")
+				m.setText("Text File Not Chosen.")
+				m.setIcon(QMessageBox.Critical)
+				m.setStandardButtons(QMessageBox.Close)
+				m.setDefaultButton(QMessageBox.Close)
+				icon = QtGui.QIcon()
+				icon.addPixmap(QtGui.QPixmap("gtts.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+				m.setWindowIcon(icon)
+				m.exec_()
 
 
-		
+	def ReadFromPDFFile(self):
+		path = str(QtWidgets.QFileDialog.getOpenFileName(self , caption="Choose PDF File" , filter="PDF files (*.pdf)")[0]).replace(r"/" , chr(92))
+		try:
+			otpt = """
 
-	
+			"""
+			with open(path, "rb") as pdf_file:
+				pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+				for i in range(0,pdf_reader.getNumPages()):
+					otpt = otpt + pdf_reader.getPage(i).extractText()+"\n"
+			self.ui.textEdit.setText(otpt)
+		except:
+				m = QMessageBox()
+				m.setWindowTitle("gTTs Error")
+				m.setText("PDF File Not Chosen.")
+				m.setIcon(QMessageBox.Critical)
+				m.setStandardButtons(QMessageBox.Close)
+				m.setDefaultButton(QMessageBox.Close)
+				icon = QtGui.QIcon()
+				icon.addPixmap(QtGui.QPixmap("gtts.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+				m.setWindowIcon(icon)
+				m.exec_()
+
+
+	def __SaveThread(self,tts_object):
+		print("saving")
+		tts_object.save(self.audiopath)
+
+
 
 
 if __name__ == "__main__":

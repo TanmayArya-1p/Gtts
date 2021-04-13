@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>259</height>
+    <width>523</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="palette">
@@ -467,7 +467,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>-40</y>
+      <y>-30</y>
       <width>661</width>
       <height>381</height>
      </rect>
@@ -509,7 +509,7 @@
    <widget class="QLabel" name="Heading_Title">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>70</x>
       <y>-10</y>
       <width>541</width>
       <height>101</height>
@@ -534,9 +534,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>100</y>
       <width>281</width>
-      <height>141</height>
+      <height>131</height>
      </rect>
     </property>
     <property name="palette">
@@ -990,32 +990,19 @@
      <string>Type Text Here</string>
     </property>
    </widget>
-   <widget class="QCommandLinkButton" name="Open_File_Location">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>100</y>
-      <width>241</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Change Output Directory</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="Convert">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>220</y>
-      <width>111</width>
+      <x>340</x>
+      <y>180</y>
+      <width>141</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Roboto Thin</family>
-      <pointsize>20</pointsize>
+      <pointsize>22</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -1040,7 +1027,7 @@ background-color:rgba(255, 255, 255, 0);
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>180</y>
+      <y>140</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -1506,7 +1493,7 @@ background-color:rgba(255, 255, 255, 0);
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>180</y>
+      <y>140</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -1518,82 +1505,88 @@ background-color:rgba(255, 255, 255, 0);
      </font>
     </property>
     <property name="text">
-     <string>Accent:</string>
+     <string>Accent :</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="Path">
+   <widget class="QPushButton" name="ReadFileButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>90</y>
-      <width>451</width>
-      <height>21</height>
+      <x>280</x>
+      <y>100</y>
+      <width>141</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Roboto Thin</family>
-      <pointsize>9</pointsize>
+      <family>Raleway Thin</family>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton::hover
+{
+color:green;
+}</string>
     </property>
     <property name="text">
-     <string>C:/TTS_Output</string>
+     <string>Read From File</string>
+    </property>
+    <property name="icon">
+     <iconset theme="File">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="Text_Path">
+   <widget class="QPushButton" name="ReadPDFButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>111</width>
+      <x>390</x>
+      <y>100</y>
+      <width>141</width>
       <height>21</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Roboto Thin</family>
-      <pointsize>10</pointsize>
+      <family>Raleway Thin</family>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton::hover
+{
+color:green;
+}</string>
     </property>
     <property name="text">
-     <string>Output Directory :</string>
+     <string>Read From PDF</string>
+    </property>
+    <property name="icon">
+     <iconset theme="File">
+      <normaloff>.</normaloff>.</iconset>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="file_name">
+   <widget class="QLabel" name="Loading_Label">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>150</y>
-      <width>91</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Roboto Thin</family>
-     </font>
-    </property>
-    <property name="placeholderText">
-     <string>(.mp3)</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Text_FileName">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>140</y>
-      <width>111</width>
+      <x>320</x>
+      <y>180</y>
+      <width>41</width>
       <height>41</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <family>Roboto Thin</family>
-      <pointsize>16</pointsize>
-     </font>
-    </property>
     <property name="text">
-     <string>File Name:</string>
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
